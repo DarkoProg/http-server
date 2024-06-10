@@ -1,4 +1,7 @@
-use std::{io::Write, net::TcpListener};
+use std::{
+    io::{Read, Write},
+    net::TcpListener,
+};
 
 fn main() {
     println!("Logs from your program will appear here!");
@@ -9,9 +12,24 @@ fn main() {
         match stream {
             Ok(mut _stream) => {
                 println!("accepted new connection");
-                _stream
-                    .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
-                    .expect("200");
+                let mut buffer = [0; 1024];
+                let _ = _stream.read(&mut buffer);
+                let message = String::from_utf8_lossy(&buffer[..]);
+                println!("{}", message);
+                for line in message.split("\r\n") {
+                    let header: Vec<&str> = line.split(" ").collect();
+                    if header[0] == "GET" {
+                        if header[1] == "/" {
+                            _stream
+                                .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
+                                .expect("200");
+                        } else {
+                            _stream
+                                .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
+                                .expect("404");
+                        }
+                    }
+                }
             }
             Err(e) => {
                 println!("error: {}", e);
