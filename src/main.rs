@@ -10,7 +10,7 @@ fn main() {
             Ok(mut _stream) => {
                 println!("accepted new connection");
                 _stream
-                    .write("HTTP/1.1 200 OK\r\r\n".as_bytes())
+                    .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
                     .expect("200");
             }
             Err(e) => {
