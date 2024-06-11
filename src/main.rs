@@ -18,13 +18,14 @@ fn main() {
                 println!("{}", message);
                 for line in message.split("\r\n") {
                     let header: Vec<&str> = line.split(" ").collect();
+                    // println!("TEST: {}", &header[1][6..]);
                     if header[0] == "GET" {
                         if header[1] == "/" {
                             _stream
                                 .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
                                 .expect("200");
-                        } else if &header[1][..4] == "echo" {
-                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][5..].len(), &header[1][5..]);
+                        } else if &header[1][..5] == "/echo/" {
+                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
                             _stream.write(response.as_bytes()).expect("200");
                         } else {
                             _stream
