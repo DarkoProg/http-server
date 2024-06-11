@@ -24,7 +24,7 @@ fn main() {
                             _stream
                                 .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
                                 .expect("200");
-                        } else if &header[1][..5] == "/echo/" {
+                        } else if &header[1][..6] == "/echo/" {
                             let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
                             _stream.write(response.as_bytes()).expect("200");
                         } else {
