@@ -27,20 +27,26 @@ fn main() {
                     // println!("{:?}", line);
                     match header[0] {
                         "GET" => {
-                            if header[1] == "/" {
-                                _stream
-                                    .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
-                                    .expect("200");
-                            } else if &header[1][..6] == "/echo/" {
-                                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
-                                _stream.write(response.as_bytes()).expect("200");
-                            } else if &header[1][..11] == "/user-agent" {
-                                println!("in user agent asdkldksa");
-                                write_user_agent_info = true;
-                            } else {
-                                _stream
-                                    .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
-                                    .expect("404");
+                            let info: Vec<&str> = header[1].split("/").clone().collect();
+                            match info[0] {
+                                "" => {
+                                    _stream
+                                        .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
+                                        .expect("200");
+                                }
+                                "echo" => {
+                                    let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[1].len(), info[1]);
+                                    _stream.write(response.as_bytes()).expect("200");
+                                }
+                                "user-agent" => {
+                                    println!("in user agent asdkldksa");
+                                    write_user_agent_info = true;
+                                }
+                                _ => {
+                                    _stream
+                                        .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
+                                        .expect("404");
+                                }
                             }
                         }
                         "User-Agent:" => {
