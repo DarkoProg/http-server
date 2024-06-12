@@ -15,23 +15,38 @@ fn main() {
                 let mut buffer = [0; 1024];
                 let _ = _stream.read(&mut buffer);
                 let message = String::from_utf8_lossy(&buffer[..]);
+                let mut write_user_agent_info = false;
                 println!("{}", message);
                 for line in message.split("\r\n") {
+                    println!("line");
                     let header: Vec<&str> = line.split(" ").collect();
                     // println!("TEST: {}", &header[1][6..]);
-                    if header[0] == "GET" {
-                        if header[1] == "/" {
-                            _stream
-                                .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
-                                .expect("200");
-                        } else if &header[1][..6] == "/echo/" {
-                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
-                            _stream.write(response.as_bytes()).expect("200");
-                        } else {
-                            _stream
-                                .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
-                                .expect("404");
+                    // println!("{:?}", line);
+                    for a in header.clone() {
+                        println!("header: {}", a);
+                    }
+                    match header[0] {
+                        "GET" => {
+                            if header[1] == "/" {
+                                _stream
+                                    .write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())
+                                    .expect("200");
+                            } else if &header[1][..6] == "/echo/" {
+                                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
+                                _stream.write(response.as_bytes()).expect("200");
+                            } else if &header[1][..12] == "/user-agent/" {
+                                write_user_agent_info = true;
+                            } else {
+                                _stream
+                                    .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
+                                    .expect("404");
+                            }
                         }
+                        "User-agent:" => {
+                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1].len(), &header[1]);
+                            _stream.write(response.as_bytes()).expect("200");
+                        }
+                        _ => {}
                     }
                 }
             }
