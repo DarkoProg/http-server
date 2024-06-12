@@ -20,11 +20,11 @@ fn main() {
                 for line in message.split("\r\n") {
                     println!("line");
                     let header: Vec<&str> = line.split(" ").collect();
-                    // println!("TEST: {}", &header[1][6..]);
-                    // println!("{:?}", line);
                     for a in header.clone() {
                         println!("header: {}", a);
                     }
+                    // println!("TEST: {}", &header[0]);
+                    // println!("{:?}", line);
                     match header[0] {
                         "GET" => {
                             if header[1] == "/" {
@@ -35,6 +35,7 @@ fn main() {
                                 let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
                                 _stream.write(response.as_bytes()).expect("200");
                             } else if &header[1][..12] == "/user-agent/" {
+                                println!("in user agent asdkldksa");
                                 write_user_agent_info = true;
                             } else {
                                 _stream
@@ -42,9 +43,12 @@ fn main() {
                                     .expect("404");
                             }
                         }
-                        "User-agent:" => {
-                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1].len(), &header[1]);
-                            _stream.write(response.as_bytes()).expect("200");
+                        "User-Agent:" => {
+                            println!("print user agent");
+                            if write_user_agent_info {
+                                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1].len(), &header[1]);
+                                _stream.write(response.as_bytes()).expect("200");
+                            }
                         }
                         _ => {}
                     }
