@@ -34,7 +34,7 @@ fn main() {
                             } else if &header[1][..6] == "/echo/" {
                                 let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", header[1][6..].len(), &header[1][6..]);
                                 _stream.write(response.as_bytes()).expect("200");
-                            } else if &header[1][..12] == "/user-agent/" {
+                            } else if &header[1][..11] == "/user-agent" {
                                 println!("in user agent asdkldksa");
                                 write_user_agent_info = true;
                             } else {
