@@ -53,7 +53,7 @@ fn main() {
                         "User-Agent:" => {
                             println!("print user agent: {}", header[1]);
                             if write_user_agent_info {
-                                let response = format!("200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", header[1].len(), &header[1]);
+                                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", header[1].len(), &header[1]);
                                 println!("response: {}", response);
                                 _stream.write(response.as_bytes()).expect("200");
                                 write_user_agent_info = false;
