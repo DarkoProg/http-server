@@ -36,7 +36,7 @@ fn main() {
                                         .expect("200");
                                 }
                                 "echo" => {
-                                    let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[1].len(), info[1]);
+                                    let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
                                 "user-agent" => {
