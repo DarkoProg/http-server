@@ -47,6 +47,7 @@ fn main() {
                                 }
                                 "files" => {
                                     let file = info[2..].join("/");
+                                    println!("file: {}", file);
                                     match fs::read_to_string(file) {
                                         Ok(file_content) => {
                                             let response = format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: {}\r\n\r\n{}", file_content.len(), file_content);
