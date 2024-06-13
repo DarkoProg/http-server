@@ -1,7 +1,5 @@
-use http::{Request, Response};
 use std::env;
 use std::fs;
-use std::path::{Path, PathBuf};
 use std::{
     io::{Read, Write},
     net::TcpListener,
@@ -31,10 +29,10 @@ fn main() {
                     // }
                     // println!("TEST: {}", &header[0]);
                     // println!("{:?}", line);
-                    let info: Vec<&str> = header[1].split("/").collect();
                     match header[0] {
                         "GET" => {
                             // println!("info {}", info[0]);
+                            let info: Vec<&str> = header[1].split("/").collect();
                             match info[1] {
                                 "" => {
                                     _stream
@@ -73,21 +71,25 @@ fn main() {
                                 }
                             }
                         }
-                        "POST" => match info[1] {
-                            "files" => {
-                                let file = format!("{}{}", args[2].clone(), &info[2..].join("/"));
-                                match fs::write(file, &lines[lines.len() - 1]) {
-                                    Ok(()) => {
-                                        let response = format!("HTTP/1.1 201 Created\r\n\r\n");
-                                        _stream.write(response.as_bytes()).expect("201");
-                                    }
-                                    Err(e) => {
-                                        println!("Err: {}", e);
+                        "POST" => {
+                            let info: Vec<&str> = header[1].split("/").collect();
+                            match info[1] {
+                                "files" => {
+                                    let file =
+                                        format!("{}{}", args[2].clone(), &info[2..].join("/"));
+                                    match fs::write(file, &lines[lines.len() - 1]) {
+                                        Ok(()) => {
+                                            let response = format!("HTTP/1.1 201 Created\r\n\r\n");
+                                            _stream.write(response.as_bytes()).expect("201");
+                                        }
+                                        Err(e) => {
+                                            println!("Err: {}", e);
+                                        }
                                     }
                                 }
+                                _ => {}
                             }
-                            _ => {}
-                        },
+                        }
                         "User-Agent:" => {
                             println!("print user agent: {}", header[1]);
                             if write_user_agent_info {
