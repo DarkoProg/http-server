@@ -9,6 +9,7 @@ fn main() {
     const SUPPORTED_ENCODING: [&str; 6] = ["gzip", "br", "compress", "exi", "pack200-gzip", "zstd"];
 
     let args: Vec<String> = env::args().collect();
+    let mut let response;
     println!("Logs from your program will appear here!");
 
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -46,8 +47,7 @@ fn main() {
                                     //     lines[2].replace(":", "").split(" ").collect();
                                     // println!("encoding req: {}", &lines[2][17..]);
                                     for encoding in SUPPORTED_ENCODING {
-                                        if &lines[2][0..15] == "Accept-Encoding"
-                                            && &lines[2][17..] == encoding
+                                        if &lines[2][17..] == encoding
                                         {
                                             response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
                                         }
@@ -107,7 +107,7 @@ fn main() {
                             println!("print user agent: {}", header[1]);
                             if write_user_agent_info {
                                 let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", header[1].len(), &header[1]);
-                                // println!("response: {}", response);
+                                // println!("let response: {}", let response);
                                 _stream.write(response.as_bytes()).expect("200");
                                 write_user_agent_info = false;
                             }
