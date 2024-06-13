@@ -41,11 +41,17 @@ fn main() {
                                         .expect("200");
                                 }
                                 "echo" => {
-                                    let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
+                                    let mut response;
+                                    let encode_info: Vec<&str> =
+                                        lines[2].replace(":", "").split(" ").collect();
+                                    if encode_info[0] == "Accept-Encoding" {
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", encode_info, encode_info ,info[2].len(), info[2]);
+                                    } else {
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
+                                    }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
                                 "user-agent" => {
-                                    println!("in user agent asdkldksa");
                                     write_user_agent_info = true;
                                 }
                                 "files" => {
