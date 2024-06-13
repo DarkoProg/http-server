@@ -44,7 +44,7 @@ fn main() {
                                     let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     // let encode_info: Vec<&str> =2
                                     //     lines[2].replace(":", "").split(" ").collect();
-                                    println!("encoding req: {}", &lines[2][16..]);
+                                    println!("encoding req: {}", &lines[2][17..]);
                                     for encoding in SUPPORTED_ENCODING {
                                         if &lines[2][0..15] == "Accept-Encoding"
                                             && &lines[2][16..] == encoding
