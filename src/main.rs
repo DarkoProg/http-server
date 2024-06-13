@@ -1,8 +1,10 @@
+use std::fs;
 use std::{
     io::{Read, Write},
     net::TcpListener,
 };
 
+//check how to send file with buffer
 fn main() {
     println!("Logs from your program will appear here!");
 
@@ -42,6 +44,20 @@ fn main() {
                                 "user-agent" => {
                                     println!("in user agent asdkldksa");
                                     write_user_agent_info = true;
+                                }
+                                "files" => {
+                                    let file = info[2..].join("/");
+                                    match fs::read_to_string(file) {
+                                        Ok(file_content) => {
+                                            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: {}\r\n\r\n{}", file_content.len(), file_content);
+                                            _stream.write(response.as_bytes()).expect("200");
+                                        }
+                                        Err(e) => {
+                                            _stream
+                                                .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
+                                                .expect("404");
+                                        }
+                                    }
                                 }
                                 _ => {
                                     _stream
