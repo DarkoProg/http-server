@@ -26,10 +26,10 @@ fn main() {
                 for line in 0..lines.len() {
                     println!("line");
                     let header: Vec<&str> = lines[line].split(" ").collect();
-                    for a in header.clone() {
-                        println!("header: {}", a);
-                    }
-                    println!("TEST: {}", &header[0]);
+                    // for a in header.clone() {
+                    //     println!("header: {}", a);
+                    // }
+                    // println!("TEST: {}", &header[0]);
                     match header[0] {
                         "GET" => {
                             // println!("info {}", info[0]);
@@ -44,6 +44,7 @@ fn main() {
                                     let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     // let encode_info: Vec<&str> =2
                                     //     lines[2].replace(":", "").split(" ").collect();
+                                    println!("encoding req: {}", &lines[2][16..]);
                                     for encoding in SUPPORTED_ENCODING {
                                         if &lines[2][0..15] == "Accept-Encoding"
                                             && &lines[2][16..] == encoding
