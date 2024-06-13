@@ -1,3 +1,4 @@
+use std::env;
 use std::fs;
 use std::{
     io::{Read, Write},
@@ -6,6 +7,10 @@ use std::{
 
 //check how to send file with buffer
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    for arg in args {
+        println!("arg: {}", arg);
+    }
     println!("Logs from your program will appear here!");
 
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -13,18 +18,18 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(mut _stream) => {
-                println!("accepted new connection");
+                // println!("accepted new connection");
                 let mut buffer = [0; 1024];
                 let _ = _stream.read(&mut buffer);
                 let message = String::from_utf8_lossy(&buffer[..]);
                 let mut write_user_agent_info = false;
-                println!("{}", message);
+                // println!("{}", message);
                 for line in message.split("\r\n") {
-                    println!("line");
+                    // println!("line");
                     let header: Vec<&str> = line.split(" ").collect();
-                    for a in header.clone() {
-                        println!("header: {}", a);
-                    }
+                    // for a in header.clone() {
+                    //     println!("header: {}", a);
+                    // }
                     // println!("TEST: {}", &header[0]);
                     // println!("{:?}", line);
                     match header[0] {
