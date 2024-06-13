@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::path::{Path, PathBuf};
 use std::{
     io::{Read, Write},
     net::TcpListener,
@@ -8,9 +9,9 @@ use std::{
 //check how to send file with buffer
 fn main() {
     let args: Vec<String> = env::args().collect();
-    for arg in args {
-        println!("arg: {}", arg);
-    }
+    // for arg in args {
+    //     println!("arg: {}", arg);
+    // }
     println!("Logs from your program will appear here!");
 
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -51,7 +52,8 @@ fn main() {
                                     write_user_agent_info = true;
                                 }
                                 "files" => {
-                                    let file = info[2..].join("/");
+                                    let file =
+                                        format!("{}{}", args[1].clone(), &info[2..].join("/"));
                                     println!("file: {}", file);
                                     match fs::read_to_string(file) {
                                         Ok(file_content) => {
