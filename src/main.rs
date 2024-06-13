@@ -54,6 +54,7 @@ fn main() {
                                             _stream.write(response.as_bytes()).expect("200");
                                         }
                                         Err(e) => {
+                                            print!("Err: {}", e);
                                             _stream
                                                 .write("HTTP/1.1 404 Not Found\r\n\r\n".as_bytes())
                                                 .expect("404");
