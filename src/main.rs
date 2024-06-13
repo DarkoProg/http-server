@@ -53,7 +53,7 @@ fn main() {
                                 }
                                 "files" => {
                                     let file =
-                                        format!("{}{}", args[1].clone(), &info[2..].join("/"));
+                                        format!("{}{}", args[2].clone(), &info[2..].join("/"));
                                     println!("file: {}", file);
                                     match fs::read_to_string(file) {
                                         Ok(file_content) => {
