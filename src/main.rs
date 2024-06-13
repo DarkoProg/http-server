@@ -46,7 +46,7 @@ fn main() {
                                     //     lines[2].replace(":", "").split(" ").collect();
                                     // println!("encoding req: {}", &lines[2][17..]);
                                     // println!("encoding size: {}", &lines[2].len());
-                                    if &lines[2].len() > 0 {
+                                    if lines[2].len() > 0 {
                                         for encoding in SUPPORTED_ENCODING {
                                             if &lines[2][17..] == encoding {
                                                 response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
