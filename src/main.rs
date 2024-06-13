@@ -1,3 +1,4 @@
+use http::{Request, Response};
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -6,12 +7,8 @@ use std::{
     net::TcpListener,
 };
 
-//check how to send file with buffer
 fn main() {
     let args: Vec<String> = env::args().collect();
-    // for arg in args {
-    //     println!("arg: {}", arg);
-    // }
     println!("Logs from your program will appear here!");
 
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -25,17 +22,18 @@ fn main() {
                 let message = String::from_utf8_lossy(&buffer[..]);
                 let mut write_user_agent_info = false;
                 // println!("{}", message);
-                for line in message.split("\r\n") {
+                let lines: Vec<&str> = message.split("\r\n").collect();
+                for line in 0..lines.len() {
                     // println!("line");
-                    let header: Vec<&str> = line.split(" ").collect();
+                    let header: Vec<&str> = lines[line].split(" ").collect();
                     // for a in header.clone() {
                     //     println!("header: {}", a);
                     // }
                     // println!("TEST: {}", &header[0]);
                     // println!("{:?}", line);
+                    let info: Vec<&str> = header[1].split("/").collect();
                     match header[0] {
                         "GET" => {
-                            let info: Vec<&str> = header[1].split("/").collect();
                             // println!("info {}", info[0]);
                             match info[1] {
                                 "" => {
@@ -54,7 +52,7 @@ fn main() {
                                 "files" => {
                                     let file =
                                         format!("{}{}", args[2].clone(), &info[2..].join("/"));
-                                    println!("file: {}", file);
+                                    // println!("file: {}", file);
                                     match fs::read_to_string(file) {
                                         Ok(file_content) => {
                                             let response = format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: {}\r\n\r\n{}", file_content.len(), file_content);
@@ -75,6 +73,21 @@ fn main() {
                                 }
                             }
                         }
+                        "POST" => match info[1] {
+                            "files" => {
+                                let file = format!("{}{}", args[2].clone(), &info[2..].join("/"));
+                                match fs::write(file, &lines[lines.len() - 1]) {
+                                    Ok(()) => {
+                                        let response = format!("HTTP/1.1 201 Created\r\n\r\n");
+                                        _stream.write(response.as_bytes()).expect("201");
+                                    }
+                                    Err(e) => {
+                                        println!("Err: {}", e);
+                                    }
+                                }
+                            }
+                            _ => {}
+                        },
                         "User-Agent:" => {
                             println!("print user agent: {}", header[1]);
                             if write_user_agent_info {
