@@ -6,7 +6,7 @@ use std::{
 };
 
 fn main() {
-    const CONTENT_ENCODING: [&str; 6] = ["gzip", "br", "compress", "exi", "pack200-gzip", "zstd"];
+    const SUPPORTED_ENCODING: [&str; 6] = ["gzip", "br", "compress", "exi", "pack200-gzip", "zstd"];
 
     let args: Vec<String> = env::args().collect();
     println!("Logs from your program will appear here!");
@@ -41,11 +41,11 @@ fn main() {
                                         .expect("200");
                                 }
                                 "echo" => {
-                                    let mut response;
-                                    let encode_info: Vec<&str> =
-                                        lines[2].replace(":", "").split(" ").collect();
-                                    if encode_info[0] == "Accept-Encoding" {
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", encode_info[1] ,info[2].len(), info[2]);
+                                    let response;
+                                    // let encode_info: Vec<&str> =2
+                                    //     lines[2].replace(":", "").split(" ").collect();
+                                    if &lines[2][0..15] == "Accept-Encoding" {
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
                                     } else {
                                         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     }
