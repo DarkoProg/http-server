@@ -47,7 +47,7 @@ fn main() {
                                     println!("encoding req: {}", &lines[2][17..]);
                                     for encoding in SUPPORTED_ENCODING {
                                         if &lines[2][0..15] == "Accept-Encoding"
-                                            && &lines[2][16..] == encoding
+                                            && &lines[2][17..] == encoding
                                         {
                                             response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
                                         }
