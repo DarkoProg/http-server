@@ -45,7 +45,7 @@ fn main() {
                                     let encode_info: Vec<&str> =
                                         lines[2].replace(":", "").split(" ").collect();
                                     if encode_info[0] == "Accept-Encoding" {
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", encode_info, encode_info ,info[2].len(), info[2]);
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", encode_info[1] ,info[2].len(), info[2]);
                                     } else {
                                         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     }
