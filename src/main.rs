@@ -41,13 +41,15 @@ fn main() {
                                         .expect("200");
                                 }
                                 "echo" => {
-                                    let response;
+                                    let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
                                     // let encode_info: Vec<&str> =2
                                     //     lines[2].replace(":", "").split(" ").collect();
-                                    if &lines[2][0..15] == "Accept-Encoding" {
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
-                                    } else {
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
+                                    for encoding in SUPPORTED_ENCODING {
+                                        if &lines[2][0..15] == "Accept-Encoding"
+                                            && &lines[2][16..] == encoding
+                                        {
+                                            response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
+                                        }
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
