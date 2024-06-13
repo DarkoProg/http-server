@@ -77,7 +77,10 @@ fn main() {
                                 "files" => {
                                     let file =
                                         format!("{}{}", args[2].clone(), &info[2..].join("/"));
-                                    match fs::write(file, &lines[lines.len() - 1]) {
+                                    match fs::write(
+                                        file,
+                                        &lines[lines.len() - 1].replace("\x00", ""),
+                                    ) {
                                         Ok(()) => {
                                             let response = format!("HTTP/1.1 201 Created\r\n\r\n");
                                             _stream.write(response.as_bytes()).expect("201");
@@ -94,7 +97,7 @@ fn main() {
                             println!("print user agent: {}", header[1]);
                             if write_user_agent_info {
                                 let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", header[1].len(), &header[1]);
-                                println!("response: {}", response);
+                                // println!("response: {}", response);
                                 _stream.write(response.as_bytes()).expect("200");
                                 write_user_agent_info = false;
                             }
