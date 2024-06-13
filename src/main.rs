@@ -6,6 +6,8 @@ use std::{
 };
 
 fn main() {
+    const CONTENT_ENCODING: [&str; 6] = ["gzip", "br", "compress", "exi", "pack200-gzip", "zstd"];
+
     let args: Vec<String> = env::args().collect();
     println!("Logs from your program will appear here!");
 
@@ -22,13 +24,12 @@ fn main() {
                 // println!("{}", message);
                 let lines: Vec<&str> = message.split("\r\n").collect();
                 for line in 0..lines.len() {
-                    // println!("line");
+                    println!("line");
                     let header: Vec<&str> = lines[line].split(" ").collect();
-                    // for a in header.clone() {
-                    //     println!("header: {}", a);
-                    // }
-                    // println!("TEST: {}", &header[0]);
-                    // println!("{:?}", line);
+                    for a in header.clone() {
+                        println!("header: {}", a);
+                    }
+                    println!("TEST: {}", &header[0]);
                     match header[0] {
                         "GET" => {
                             // println!("info {}", info[0]);
