@@ -26,7 +26,6 @@ fn main() {
                 // println!("{}", message);
                 let lines: Vec<&str> = message.split("\r\n").collect();
                 for line in 0..lines.len() {
-                    // println!("line");
                     let header: Vec<&str> = lines[line].split(" ").collect();
                     // for a in header.clone() {
                     //     println!("header: {}", a);
@@ -50,8 +49,7 @@ fn main() {
                                     // println!("encoding size: {}", &lines[2].len());
                                     if lines[2].len() > 0 {
                                         let mut requested_encoding = "".to_owned();
-                                        let mut encoder =
-                                            GzEncoder::new(vec![], Compression::default());
+                                        let mut encoder: GzEncoder<Vec<u8>>;
                                         let mut encoded_data: Vec<u8> = Vec::new();
                                         for accepted_encoding in lines[2][17..].split(", ") {
                                             for encoding in SUPPORTED_ENCODING {
@@ -59,8 +57,11 @@ fn main() {
                                                     requested_encoding.push_str(
                                                         format!("{}, ", accepted_encoding).as_str(),
                                                     );
+                                                    encoder = GzEncoder::new(
+                                                        Vec::new(),
+                                                        Compression::default(),
+                                                    );
                                                     let _ = encoder.write_all(info[2].as_bytes());
-                                                    // encoded_data =
                                                     encoded_data = encoder.finish().unwrap();
                                                 }
                                             }
@@ -68,9 +69,9 @@ fn main() {
                                         requested_encoding.pop();
                                         requested_encoding.pop();
                                         let encrypted_string =
-                                            String::from_utf8_lossy(&*encoded_data);
-                                        // println!("encoded data: {:?}", &encoded_data);
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), encrypted_string);
+                                            String::from_utf8(encoded_data).unwrap();
+                                        println!("encoded data: {}", encrypted_string);
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), String::from_utf8_lossy(&*encoded_data));
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
