@@ -43,6 +43,7 @@ fn main() {
                                 }
                                 "echo" => {
                                     let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", info[2].len(), info[2]);
+                                    let mut encoded_data: Vec<u8> = Vec::new();
                                     // let encode_info: Vec<&str> =2
                                     //     lines[2].replace(":", "").split(" ").collect();
                                     // println!("encoding req: {}", &lines[2][17..]);
@@ -50,7 +51,6 @@ fn main() {
                                     if lines[2].len() > 0 {
                                         let mut requested_encoding = "".to_owned();
                                         let mut encoder: GzEncoder<Vec<u8>>;
-                                        let mut encoded_data: Vec<u8> = Vec::new();
                                         for accepted_encoding in lines[2][17..].split(", ") {
                                             for encoding in SUPPORTED_ENCODING {
                                                 if accepted_encoding == encoding {
@@ -68,12 +68,12 @@ fn main() {
                                         }
                                         requested_encoding.pop();
                                         requested_encoding.pop();
-                                        let encrypted_string =
-                                            String::from_utf8(encoded_data).unwrap();
-                                        println!("encoded data: {}", encrypted_string);
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), encrypted_string);
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n", requested_encoding, encoded_data.len());
+                                        //append encrypted data when sending to client
                                     }
-                                    _stream.write(response.as_bytes()).expect("200");
+                                    let a = response.as_bytes();
+                                    let final_response: &[u8] = &[a, &encoded_data].concat();
+                                    _stream.write(final_response).expect("200");
                                 }
                                 "user-agent" => {
                                     write_user_agent_info = true;
