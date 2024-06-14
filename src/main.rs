@@ -1,3 +1,5 @@
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use std::env;
 use std::fs;
 use std::{
@@ -48,18 +50,28 @@ fn main() {
                                     // println!("encoding size: {}", &lines[2].len());
                                     if lines[2].len() > 0 {
                                         let mut requested_encoding = "".to_owned();
+                                        let mut encoder: GzEncoder<Vec<u8>>;
+                                        let mut encoded_data: Vec<u8> = Vec::new();
                                         for accepted_encoding in lines[2][17..].split(", ") {
                                             for encoding in SUPPORTED_ENCODING {
                                                 if accepted_encoding == encoding {
                                                     requested_encoding.push_str(
                                                         format!("{}, ", accepted_encoding).as_str(),
                                                     );
+                                                    encoder = GzEncoder::new(
+                                                        Vec::new(),
+                                                        Compression::default(),
+                                                    );
+                                                    let _ = encoder.write_all(info[2].as_bytes());
+                                                    encoded_data = encoder.finish().unwrap();
                                                 }
                                             }
                                         }
                                         requested_encoding.pop();
                                         requested_encoding.pop();
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, info[2].len(), info[2]);
+                                        let encrypted_string =
+                                            String::from_utf8(encoded_data).unwrap();
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), encrypted_string);
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
