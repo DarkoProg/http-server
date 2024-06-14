@@ -71,7 +71,7 @@ fn main() {
                                         let encrypted_string =
                                             String::from_utf8(encoded_data).unwrap();
                                         println!("encoded data: {}", encrypted_string);
-                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), String::from_utf8_lossy(&*encoded_data));
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), encrypted_string);
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
