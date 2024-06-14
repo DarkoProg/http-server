@@ -47,11 +47,19 @@ fn main() {
                                     // println!("encoding req: {}", &lines[2][17..]);
                                     // println!("encoding size: {}", &lines[2].len());
                                     if lines[2].len() > 0 {
-                                        for encoding in SUPPORTED_ENCODING {
-                                            if &lines[2][17..] == encoding {
-                                                response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", &lines[2][16..] ,info[2].len(), info[2]);
+                                        let mut requested_encoding = "".to_owned();
+                                        for accepted_encoding in lines[2][17..].split(", ") {
+                                            for encoding in SUPPORTED_ENCODING {
+                                                if accepted_encoding == encoding {
+                                                    requested_encoding.push_str(
+                                                        format!("{}, ", accepted_encoding).as_str(),
+                                                    );
+                                                }
                                             }
                                         }
+                                        requested_encoding.pop();
+                                        requested_encoding.pop();
+                                        response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, info[2].len(), info[2]);
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
                                 }
