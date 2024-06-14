@@ -26,7 +26,7 @@ fn main() {
                 // println!("{}", message);
                 let lines: Vec<&str> = message.split("\r\n").collect();
                 for line in 0..lines.len() {
-                    println!("line");
+                    // println!("line");
                     let header: Vec<&str> = lines[line].split(" ").collect();
                     // for a in header.clone() {
                     //     println!("header: {}", a);
@@ -71,6 +71,7 @@ fn main() {
                                         requested_encoding.pop();
                                         let encrypted_string =
                                             String::from_utf8_lossy(&*encoded_data);
+                                        println!("encoded data: {}", encrypted_string);
                                         response = format!("HTTP/1.1 200 OK\r\nContent-Encoding: {}\r\nContent-Type: text/plain\r\nContent-length: {}\r\n\r\n{}", requested_encoding, encrypted_string.len(), encrypted_string);
                                     }
                                     _stream.write(response.as_bytes()).expect("200");
